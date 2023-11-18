@@ -1,35 +1,46 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+// App.jsx
+import React, { useState } from 'react';
+import SliderContainer from './SliderContainer';
+import './assets/styles.css'; 
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [slider1Value, setSlider1Value] = useState(5000);
+  const [slider2Value, setSlider2Value] = useState(3);
+  const [cuotaFijaPorMes, setCuotaFijaPorMes] = useState(calculateCuotaFijaPorMes(5000, 3)); // Calcula la cuota inicial
+
+  const handleSlider1Change = (value) => {
+    setSlider1Value(value);
+    setCuotaFijaPorMes(calculateCuotaFijaPorMes(value, slider2Value));
+  };
+
+  const handleSlider2Change = (value) => {
+    setSlider2Value(value);
+    setCuotaFijaPorMes(calculateCuotaFijaPorMes(slider1Value, value));
+  };
+
+  
+  function calculateCuotaFijaPorMes(montoTotal, plazo) {
+    return plazo !== 0 ? montoTotal / plazo : 0;
+  }
 
   return (
-    <>
+    <div>
+      <h1>Simulá tu crédito</h1>
+      <SliderContainer
+        slider1Value={slider1Value}
+        slider2Value={slider2Value}
+        onSlider1Change={handleSlider1Change}
+        onSlider2Change={handleSlider2Change}
+      />
       <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        <h2>Cuota Fija por Mes</h2>
+        <p>Monto Total: ${slider1Value}</p>
+        <p>Plazo: {slider2Value} meses</p>
+        <p>Cuota Fija por Mes: ${cuotaFijaPorMes.toFixed(2)}</p>
+        {}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </div>
+  );
 }
 
-export default App
+export default App;
